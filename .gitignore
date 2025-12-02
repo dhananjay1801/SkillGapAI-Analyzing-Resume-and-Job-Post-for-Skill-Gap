@@ -54,5 +54,6 @@ Thumbs.db
 
 # Project specific
 *.pdf
+*.docx
 # Uncomment above if you don't want to track sample files
 # Keep them if they're test files you want in the repo

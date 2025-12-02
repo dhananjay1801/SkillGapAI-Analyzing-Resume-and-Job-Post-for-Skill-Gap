@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 from utils.file_parser import parse_file
 from utils.text_cleaner import process_text
+from utils.skill_extractor import extract_skills
 
 st.set_page_config(page_title = 'SkillGapAI - Dhananjay', layout = 'wide')
 
@@ -60,8 +61,8 @@ with col1:
     cleaned_resume = process_text(resume_text)
 
 
-    # print cleaned text
-    st.text_area("preview resume", cleaned_resume, height='content')
+    # preview cleaned text
+    # st.text_area("preview resume", cleaned_resume, height='content')
 
 with col2:
     st.markdown("#### Job Description")
@@ -79,7 +80,29 @@ with col2:
 
     cleaned_jd = process_text(job_text)
 
-    # print cleaned text
-    st.text_area("preview jd", cleaned_jd, height='content')
+    # preview cleaned text
+    # st.text_area("preview jd", cleaned_jd, height='content')
 
 
+# skill extraction
+resume_skills = extract_skills(cleaned_resume) if cleaned_resume else {'technical': [], 'soft': []}
+jd_skills = extract_skills(cleaned_jd) if cleaned_jd else {'technical': [], 'soft': []}
+
+st.markdown('---')
+st.subheader('Extracted Skills:')
+
+col3, col4 = st.columns(2)
+
+with col3:
+    st.markdown("#### Resume Skills")
+    st.markdown(f"**Technical ({len(resume_skills['technical'])})**")
+    st.write(", ".join(resume_skills['technical']) if resume_skills['technical'] else "None found")
+    st.markdown(f"**Soft ({len(resume_skills['soft'])})**")
+    st.write(", ".join(resume_skills['soft']) if resume_skills['soft'] else "None found")
+
+with col4:
+    st.markdown("#### Job Description Skills")
+    st.markdown(f"**Technical ({len(jd_skills['technical'])})**")
+    st.write(", ".join(jd_skills['technical']) if jd_skills['technical'] else "None found")
+    st.markdown(f"**Soft ({len(jd_skills['soft'])})**")
+    st.write(", ".join(jd_skills['soft']) if jd_skills['soft'] else "None found")
