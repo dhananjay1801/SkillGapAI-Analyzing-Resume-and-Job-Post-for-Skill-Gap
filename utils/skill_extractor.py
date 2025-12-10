@@ -11,7 +11,7 @@ def get_nlp():
     try:
         return spacy.load('en_core_web_sm')
     except OSError:
-        from spacy.cli import download
+        from spacy.cli.download import download
         download('en_core_web_sm')
         return spacy.load('en_core_web_sm')
 
@@ -47,7 +47,7 @@ def extract_skills_spacy(text):
 # bert setup
 @lru_cache(maxsize=1)
 def get_ner_pipeline():
-    return pipeline('ner', model='jjzha/jobbert_skill_extraction', aggregation_strategy='simple')
+    return pipeline(task='ner', model='jjzha/jobbert_skill_extraction', aggregation_strategy='simple')  # type: ignore
 
 @lru_cache(maxsize=1)
 def get_tokenizer():

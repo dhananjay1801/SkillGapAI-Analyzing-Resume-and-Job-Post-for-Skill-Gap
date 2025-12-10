@@ -3,6 +3,7 @@ from streamlit_autorefresh import st_autorefresh
 from utils.file_parser import parse_file
 from utils.text_cleaner import process_text
 from utils.skill_extractor import extract_skills
+from utils.skill_gap_analyzer import analyze_complete_skill_gap, calculate_match_percentage
 
 st.set_page_config(page_title = 'SkillGapAI - Dhananjay', layout = 'wide')
 
@@ -35,6 +36,7 @@ st.markdown("""
 
 
 st.title("SkillGapAI Analyzing Resume and Job Post for Skill Gap")
+st.markdown('---')
 
 st.subheader("Upload files")
 
@@ -88,21 +90,63 @@ with col2:
 resume_skills = extract_skills(cleaned_resume) if cleaned_resume else {'technical': [], 'soft': []}
 jd_skills = extract_skills(cleaned_jd) if cleaned_jd else {'technical': [], 'soft': []}
 
+# display extracted skills
+# st.markdown('---')
+# st.subheader('Extracted Skills:')
+
+# col3, col4 = st.columns(2)
+
+# with col3:
+#     st.markdown("#### Resume Skills")
+#     st.markdown(f"**Technical ({len(resume_skills['technical'])})**")
+#     st.write(", ".join(resume_skills['technical']) if resume_skills['technical'] else "None found")
+#     st.markdown(f"**Soft ({len(resume_skills['soft'])})**")
+#     st.write(", ".join(resume_skills['soft']) if resume_skills['soft'] else "None found")
+
+# with col4:
+#     st.markdown("#### Job Description Skills")
+#     st.markdown(f"**Technical ({len(jd_skills['technical'])})**")
+#     st.write(", ".join(jd_skills['technical']) if jd_skills['technical'] else "None found")
+#     st.markdown(f"**Soft ({len(jd_skills['soft'])})**")
+#     st.write(", ".join(jd_skills['soft']) if jd_skills['soft'] else "None found")
+
+
 st.markdown('---')
-st.subheader('Extracted Skills:')
+st.subheader('Skill Gap Analysis')
 
-col3, col4 = st.columns(2)
+if (resume_skills['technical'] or resume_skills['soft']) and (jd_skills['technical'] or jd_skills['soft']):
+    gap_analysis = analyze_complete_skill_gap(jd_skills, resume_skills)
 
-with col3:
-    st.markdown("#### Resume Skills")
-    st.markdown(f"**Technical ({len(resume_skills['technical'])})**")
-    st.write(", ".join(resume_skills['technical']) if resume_skills['technical'] else "None found")
-    st.markdown(f"**Soft ({len(resume_skills['soft'])})**")
-    st.write(", ".join(resume_skills['soft']) if resume_skills['soft'] else "None found")
+    tech_pct = calculate_match_percentage(gap_analysis['technical'])
+    soft_pct = calculate_match_percentage(gap_analysis['soft'])
 
-with col4:
-    st.markdown("#### Job Description Skills")
-    st.markdown(f"**Technical ({len(jd_skills['technical'])})**")
-    st.write(", ".join(jd_skills['technical']) if jd_skills['technical'] else "None found")
-    st.markdown(f"**Soft ({len(jd_skills['soft'])})**")
-    st.write(", ".join(jd_skills['soft']) if jd_skills['soft'] else "None found")
+    col3, col4 = st.columns(2)
+    with col3:
+        st.metric("Technical Skills Match:", f"{tech_pct}%")
+    with col4:
+        st.metric("Soft Skills Match:", f"{soft_pct}%")
+    
+    # Technical Skills Gap
+    st.markdown("#### Technical Skills")
+    tech = gap_analysis['technical']
+    
+    if tech['matched']:
+        st.write("**Matched:** " + ", ".join([f"{jd}" for jd, res, score in tech['matched']]))
+    if tech['partial']:
+        st.write("**Partial:** " + ", ".join([f"{jd} → {res} ({int(score*100)}%)" for jd, res, score in tech['partial']]))
+    if tech['missing']:
+        st.write("**Missing:** " + ", ".join([jd for jd, score in tech['missing']]))
+    
+    # Soft Skills Gap
+    st.markdown("#### Soft Skills")
+    soft = gap_analysis['soft']
+    
+    if soft['matched']:
+        st.write("**Matched:** " + ", ".join([f"{jd}" for jd, res, score in soft['matched']]))
+    if soft['partial']:
+        st.write("**Partial:** " + ", ".join([f"{jd} → {res} ({int(score*100)}%)" for jd, res, score in soft['partial']]))
+    if soft['missing']:
+        st.write("**Missing:** " + ", ".join([jd for jd, score in soft['missing']]))
+
+else:
+    st.info("Upload both resume and job description to see skill gap analysis.")

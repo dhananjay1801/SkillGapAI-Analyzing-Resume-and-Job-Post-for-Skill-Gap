@@ -14,6 +14,7 @@ def parse_txt(file):
     except Exception as exc:
         # raise ValueError(f"Failed to read text file: {exc}") from exc
         st.error('Failed to read text file.')
+        return ""
 
 
 
@@ -24,8 +25,7 @@ def parse_pdf(file):
     except Exception as exc:
         # raise ValueError("Unable to read PDF. It may be encrypted or corrupted.") from exc
         st.error('Failed to read pdf.')
-
-        
+        return ""
 
     pages_text = []
     for page_no, page in enumerate(pdf.pages, start = 1):
@@ -34,7 +34,7 @@ def parse_pdf(file):
         except Exception as exc:
             # raise ValueError(f'Failed to extract text from page {page_no}') from exc
             st.error(f'Failed to extract text from page {page_no}.')
-
+            page_text = ""
         
         if page_text:
             pages_text.append(page_text)
@@ -56,6 +56,7 @@ def parse_docx(file):
     except Exception as exc:
         # raise ValueError('Failed to read docx file.') from exc
         st.error('Failed to read docx file.')
+        return ""
 
     if not docx or not docx.strip():
         # raise ValueError("No text found in the docx file.")
@@ -68,6 +69,7 @@ def parse_file(file):
     if file is None:
         # raise ValueError('No file uploaded.')
         st.error('No file uploaded.')
+        return ""
     
     filename = file.name.lower()
 
@@ -82,4 +84,4 @@ def parse_file(file):
 
     # raise ValueError("Unsupported file type. Please upload pdf, docx or txt file.")
     st.error('Unsupported file type. Please upload pdf, docx or txt file.')
-    
+    return ""
