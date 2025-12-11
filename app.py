@@ -11,28 +11,29 @@ st.set_page_config(page_title = 'SkillGapAI - Dhananjay', layout = 'wide')
 # st_autorefresh(interval=1000, limit=None, key='my_autorefresh')
 
 # Hide Streamlit's default header/menu
-st.markdown("""
-<style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    .stApp {
-        margin-top: -80px;
-        padding-top: 0rem;
-    }
-    .stApp > header {
-        position: fixed;
-        top: 0;
-    }
-    .stApp > div {
-        margin-top: 0px;
-    }
-    div[data-testid="stAppViewContainer"] {
-        margin-top: 0px;
-        padding-top: 0px;
-    }
-</style>
-""", unsafe_allow_html=True)
+
+# st.markdown("""
+# <style>
+#     #MainMenu {visibility: hidden;}
+#     footer {visibility: hidden;}
+#     header {visibility: hidden;}
+#     .stApp {
+#         margin-top: -80px;
+#         padding-top: 0rem;
+#     }
+#     .stApp > header {
+#         position: fixed;
+#         top: 0;
+#     }
+#     .stApp > div {
+#         margin-top: 0px;
+#     }
+#     div[data-testid="stAppViewContainer"] {
+#         margin-top: 0px;
+#         padding-top: 0px;
+#     }
+# </style>
+# """, unsafe_allow_html=True)
 
 
 st.title("SkillGapAI Analyzing Resume and Job Post for Skill Gap")
@@ -91,24 +92,24 @@ resume_skills = extract_skills(cleaned_resume) if cleaned_resume else {'technica
 jd_skills = extract_skills(cleaned_jd) if cleaned_jd else {'technical': [], 'soft': []}
 
 # display extracted skills
-# st.markdown('---')
-# st.subheader('Extracted Skills:')
+st.markdown('---')
+st.subheader('Extracted Skills:')
 
-# col3, col4 = st.columns(2)
+col88, col99 = st.columns(2)
 
-# with col3:
-#     st.markdown("#### Resume Skills")
-#     st.markdown(f"**Technical ({len(resume_skills['technical'])})**")
-#     st.write(", ".join(resume_skills['technical']) if resume_skills['technical'] else "None found")
-#     st.markdown(f"**Soft ({len(resume_skills['soft'])})**")
-#     st.write(", ".join(resume_skills['soft']) if resume_skills['soft'] else "None found")
+with col88:
+    st.markdown("#### Resume Skills")
+    st.markdown(f"**Technical ({len(resume_skills['technical'])})**")
+    st.write(", ".join(resume_skills['technical']) if resume_skills['technical'] else "None found")
+    st.markdown(f"**Soft ({len(resume_skills['soft'])})**")
+    st.write(", ".join(resume_skills['soft']) if resume_skills['soft'] else "None found")
 
-# with col4:
-#     st.markdown("#### Job Description Skills")
-#     st.markdown(f"**Technical ({len(jd_skills['technical'])})**")
-#     st.write(", ".join(jd_skills['technical']) if jd_skills['technical'] else "None found")
-#     st.markdown(f"**Soft ({len(jd_skills['soft'])})**")
-#     st.write(", ".join(jd_skills['soft']) if jd_skills['soft'] else "None found")
+with col99:
+    st.markdown("#### Job Description Skills")
+    st.markdown(f"**Technical ({len(jd_skills['technical'])})**")
+    st.write(", ".join(jd_skills['technical']) if jd_skills['technical'] else "None found")
+    st.markdown(f"**Soft ({len(jd_skills['soft'])})**")
+    st.write(", ".join(jd_skills['soft']) if jd_skills['soft'] else "None found")
 
 
 st.markdown('---')

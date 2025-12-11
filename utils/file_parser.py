@@ -1,6 +1,8 @@
 import streamlit as st
 from PyPDF2 import PdfReader
 import docx2txt
+import easyocr
+import fitz
 
 def parse_txt(file):
     file.seek(0)
@@ -41,11 +43,48 @@ def parse_pdf(file):
         else:
             pages_text.append("")
     
-    if not pages_text:
-        # raise ValueError("No extractable text found in the pdf.")
-        st.error('No extractable text found in the pdf.')
+    all_text = '\n'.join(pages_text).strip()
+    if not all_text:
+        # try OCR if not text layer found (pdf is image based)
+        return parse_pdf_ocr(file)
     
-    return '\n'.join(pages_text).strip()
+    return all_text
+
+
+def parse_pdf_ocr(file):
+    # Extract text from image-based PDF using OCR
+    file.seek(0)
+    pdf_bytes = file.read()
+
+    try:
+        pdf_document = fitz.open(stream=pdf_bytes, filetype="pdf")
+    except Exception as exc:
+        st.error('Failed to open PDF for OCR.')
+        return ""
+
+    reader = easyocr.Reader(['en'], gpu=False)
+
+    pages_text = []
+    for page_num in range(len(pdf_document)):
+        try:
+            page = pdf_document[page_num]
+            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+            img_bytes = pix.tobytes("png")
+            
+            result = reader.readtext(img_bytes, detail=0)
+            text = ' '.join(result)
+            pages_text.append(text)
+        except Exception as exc:
+            st.error(f'OCR failed on page {page_num + 1}.')
+            pages_text.append("")
+
+    pdf_document.close()
+
+    all_text = '\n'.join(pages_text).strip()
+    if not all_text:
+        st.error('OCR could not extract any text from the PDF.')
+
+    return all_text
 
 
 
