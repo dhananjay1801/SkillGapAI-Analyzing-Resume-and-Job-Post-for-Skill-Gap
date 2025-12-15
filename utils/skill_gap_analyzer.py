@@ -5,7 +5,7 @@ from functools import lru_cache
 
 # threshold for skill matching
 EXACT_MATCH_THRESHOLD = 0.85
-PARTIAL_MATCH_THRESHOLD = 0.70
+PARTIAL_MATCH_THRESHOLD = 0.65
 
 # BERT model setup
 @lru_cache(maxsize=1)
