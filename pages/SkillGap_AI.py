@@ -8,7 +8,10 @@ from utils.text_cleaner import process_text
 from utils.skill_extractor import extract_skills
 from utils.skill_gap_analyzer import analyze_complete_skill_gap, calculate_match_percentage
 
-st.set_page_config(page_title = 'SkillGapAI - Dhananjay', layout = 'wide')
+st.set_page_config(
+    page_title = 'SkillGapAI - AI Analyzer',
+    layout = 'wide'
+)
 
 # auto refresh
 # st_autorefresh(interval=1000, limit=None, key='my_autorefresh')
