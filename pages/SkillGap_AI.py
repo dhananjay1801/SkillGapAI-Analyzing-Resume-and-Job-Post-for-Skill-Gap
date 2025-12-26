@@ -7,6 +7,7 @@ from utils.file_parser import parse_file
 from utils.text_cleaner import process_text
 from utils.skill_extractor import extract_skills
 from utils.skill_gap_analyzer import analyze_complete_skill_gap, calculate_match_percentage
+from utils.skill_recommendation import get_smart_recommendations
 
 st.set_page_config(
     page_title = 'SkillGapAI - AI Analyzer',
@@ -387,6 +388,32 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
             </div>
         </div>
         """, unsafe_allow_html=True)
+
+        st.markdown('---')
+        st.markdown('<h3 style="text-align: center; margin: 1.5rem 0 1rem 0;">Recommendations</h3>', unsafe_allow_html=True)
+
+        recommendations = get_smart_recommendations(gap_analysis, resume_skills)
+
+        if recommendations:
+            # Create 2 columns
+            cols = st.columns(2)
+            
+            for i, rec in enumerate(recommendations):
+                col_idx = i % 2
+                with cols[col_idx]:
+                    st.markdown(f"""
+                    <div style="background: #0f172a; border-radius: 8px; padding: 1rem; margin: 0.75rem 0;">
+                        <div style="color: #f8fafc; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">{i+1}. {rec['skill']}</div>
+                        <div style="color: #cbd5e1; font-size: 0.85rem;">
+                            <div style="margin-bottom: 0.3rem;"><span style="color: #94a3b8;">Learning Time:</span> {rec['learning_time']}</div>
+                            <div style="margin-bottom: 0.3rem;"><span style="color: #94a3b8;">Match Impact:</span> <span style="color: #22c55e;">+{rec['match_impact']}%</span></div>
+                            <div style="margin-bottom: 0.3rem;"><span style="color: #94a3b8;">Learning Ease:</span> <span style="color: #eab308;">{int(rec['similarity_score']*100)}%</span></div>
+                            {f'<div><span style="color: #94a3b8;">Similar to:</span> {rec["closest_existing"]} ({int(rec["closest_similarity"]*100)}%)</div>' if rec['closest_existing'] else ''}
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+        else:
+            st.info("No skill recommendations - you have all required skills!")
 
     else:
         st.info("No skills found. Please check your inputs.")
