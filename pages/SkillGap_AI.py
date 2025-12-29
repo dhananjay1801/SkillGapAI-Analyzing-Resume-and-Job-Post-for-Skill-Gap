@@ -3,11 +3,13 @@ from streamlit_autorefresh import st_autorefresh
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
+from datetime import datetime
 from utils.file_parser import parse_file
 from utils.text_cleaner import process_text
 from utils.skill_extractor import extract_skills
 from utils.skill_gap_analyzer import analyze_complete_skill_gap, calculate_match_percentage
 from utils.skill_recommendation import get_smart_recommendations
+from utils.report_generator import generate_pdf_report
 
 st.set_page_config(
     page_title = 'SkillGapAI - AI Analyzer',
@@ -414,6 +416,17 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
                     """, unsafe_allow_html=True)
         else:
             st.info("No skill recommendations - you have all required skills!")
+
+        # Download Report
+        st.markdown('---')
+        pdf_buffer = generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommendations, fig_tech, fig_soft, fig_radar)
+        st.download_button(
+            label="Download PDF Report",
+            data=pdf_buffer,
+            file_name=f"skill_gap_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+            mime="application/pdf",
+            type="primary"
+        )
 
     else:
         st.info("No skills found. Please check your inputs.")
