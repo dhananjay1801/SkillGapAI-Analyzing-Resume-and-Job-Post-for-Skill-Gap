@@ -10,38 +10,31 @@ def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommend
     tech = gap_analysis['technical']
     soft = gap_analysis['soft']
     
-    # Helper for color based on percentage
     def get_color_class(pct):
         if pct >= 70: return "#22c55e"
         elif pct >= 40: return "#eab308"
         return "#ef4444"
     
-    # Convert plotly charts to base64 images
     def chart_to_base64(fig):
         if fig is None:
             return None
         try:
-            # Update the figure directly for PDF (white background)
             fig_copy = fig.to_dict()
             
-            # Update background colors
             if 'layout' in fig_copy:
                 fig_copy['layout']['paper_bgcolor'] = 'white'
                 fig_copy['layout']['plot_bgcolor'] = 'white'
                 
-                # Update annotation colors
                 if 'annotations' in fig_copy['layout']:
                     for ann in fig_copy['layout']['annotations']:
                         if 'font' in ann and 'color' in ann['font']:
                             ann['font']['color'] = '#000000'
                 
-                # Update title color if exists
                 if 'title' in fig_copy['layout']:
                     if isinstance(fig_copy['layout']['title'], dict):
                         if 'font' in fig_copy['layout']['title']:
                             fig_copy['layout']['title']['font']['color'] = '#000000'
                 
-                # Update polar axis colors for radar chart
                 if 'polar' in fig_copy['layout']:
                     if 'angularaxis' in fig_copy['layout']['polar']:
                         if 'tickfont' in fig_copy['layout']['polar']['angularaxis']:
@@ -55,7 +48,6 @@ def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommend
                         if 'gridcolor' in fig_copy['layout']['polar']['angularaxis']:
                             fig_copy['layout']['polar']['angularaxis']['gridcolor'] = '#cccccc'
                 
-                # Update legend colors
                 if 'legend' in fig_copy['layout']:
                     if 'font' in fig_copy['layout']['legend']:
                         fig_copy['layout']['legend']['font']['color'] = '#000000'
@@ -63,27 +55,21 @@ def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommend
             from plotly.graph_objects import Figure
             fig_white = Figure(fig_copy)
             
-            # Try different methods to convert to image
             img_bytes = None
             try:
-                # Try with kaleido engine
                 img_bytes = fig_white.to_image(format="png", width=400, height=300, engine="kaleido")
             except:
                 try:
-                    # Try without engine (uses orca if available)
                     img_bytes = fig_white.to_image(format="png", width=400, height=300)
                 except:
-                    # Last resort: try original figure
                     img_bytes = fig.to_image(format="png", width=400, height=300)
             
             if img_bytes:
                 return base64.b64encode(img_bytes).decode('utf-8')
             return None
         except Exception as e:
-            # If all fails, return None
             return None
     
-    # Convert charts to base64 - ensure figures are valid
     tech_chart_img = None
     soft_chart_img = None
     radar_chart_img = None
@@ -288,8 +274,6 @@ def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommend
             </div>
     """
     
-    # Add pie charts alongside overall score (matching website layout)
-    # Always show chart boxes, even if image conversion failed
     html += f"""
             <div class="chart-box">
     """
@@ -315,7 +299,6 @@ def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommend
         </div>
     """
     
-    # Add radar chart (always show, even if conversion failed)
     html += """
         <div class="radar-chart">
             <div class="radar-title">Skills Coverage Radar</div>
@@ -442,7 +425,6 @@ def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommend
     </html>
     """
     
-    # Generate PDF
     if sys.platform == "win32":
         gtk_bin = r"D:\Program Files\GTK3-Runtime Win64\bin"
         if os.path.exists(gtk_bin) and hasattr(os, 'add_dll_directory'):

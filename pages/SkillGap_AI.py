@@ -212,7 +212,6 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
         tech = gap_analysis['technical']
         soft = gap_analysis['soft']
         
-        # Helper function for color
         def get_color(pct):
             if pct >= 70: return "#22c55e"
             elif pct >= 40: return "#eab308"
@@ -223,7 +222,6 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
             elif pct >= 40: return "score-yellow"
             return "score-red"
 
-        # Row 1: Overall Score + Pie Charts
         score_col1, score_col2, score_col3 = st.columns([1, 1, 1])
         
         with score_col1:
@@ -235,7 +233,6 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
             """, unsafe_allow_html=True)
         
         with score_col2:
-            # Technical Skills Pie Chart
             fig_tech = go.Figure(data=[go.Pie(
                 values=[len(tech['matched']), len(tech['partial']), len(tech['missing'])],
                 labels=['Matched', 'Partial', 'Missing'],
@@ -259,7 +256,6 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
             st.plotly_chart(fig_tech, width='stretch')
         
         with score_col3:
-            # Soft Skills Pie Chart
             fig_soft = go.Figure(data=[go.Pie(
                 values=[len(soft['matched']), len(soft['partial']), len(soft['missing'])],
                 labels=['Matched', 'Partial', 'Missing'],
@@ -282,10 +278,8 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
             )
             st.plotly_chart(fig_soft, width='stretch')
         
-        # Radar Chart - Skills Coverage (moved above detailed cards)
         st.markdown('<h3 style="text-align: center; margin: 2rem 0 1rem 0;">Skills Coverage Radar</h3>', unsafe_allow_html=True)
         
-        # Calculate coverage percentages for radar
         tech_total = len(tech['matched']) + len(tech['partial']) + len(tech['missing'])
         soft_total = len(soft['matched']) + len(soft['partial']) + len(soft['missing'])
         
@@ -294,14 +288,11 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
         soft_matched_pct = (len(soft['matched']) / soft_total * 100) if soft_total > 0 else 0
         soft_partial_pct = (len(soft['partial']) / soft_total * 100) if soft_total > 0 else 0
         
-        # Combined scores
         tech_coverage = tech_matched_pct + (tech_partial_pct * 0.5)
         soft_coverage = soft_matched_pct + (soft_partial_pct * 0.5)
         
-        # Radar Chart
         categories = ['Technical Skills', 'Soft Skills', 'Full Match Rate', 'Partial Match Rate', 'Overall Fit']
         
-        # Resume values (what candidate has)
         resume_values = [
             tech_coverage,
             soft_coverage,
@@ -321,7 +312,6 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
             name='Your Profile'
         ))
         
-        # Job requirement baseline (100% for all)
         fig_radar.add_trace(go.Scatterpolar(
             r=[100, 100, 100, 0, 100, 100],
             theta=categories + [categories[0]],
@@ -357,7 +347,6 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
         )
         st.plotly_chart(fig_radar, width='stretch')
         
-        # Detailed Skills Cards - Equal Height
         st.markdown('<h3 style="text-align: center; margin: 2rem 0 1rem 0;">Detailed Skill Breakdown</h3>', unsafe_allow_html=True)
         
         matched_tags_tech = "".join([f'<span class="skill-tag tag-matched">{jd}</span>' for jd, res, score in tech['matched']]) if tech['matched'] else '<span style="color: #64748b;">None</span>'
@@ -397,7 +386,6 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
         recommendations = get_smart_recommendations(gap_analysis, resume_skills)
 
         if recommendations:
-            # Create 2 columns
             cols = st.columns(2)
             
             for i, rec in enumerate(recommendations):
@@ -417,7 +405,6 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
         else:
             st.info("No skill recommendations - you have all required skills!")
 
-        # Download Report
         st.markdown('---')
         pdf_buffer = generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommendations, fig_tech, fig_soft, fig_radar)
         st.download_button(
