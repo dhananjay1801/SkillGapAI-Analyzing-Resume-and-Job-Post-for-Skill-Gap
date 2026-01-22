@@ -98,12 +98,19 @@ st.markdown("""
     .score-green { color: #22c55e; }
     .score-yellow { color: #eab308; }
     .score-red { color: #ef4444; }
+    .skill-tags-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
     .skill-tag {
-        display: inline-block;
-        padding: 6px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 8px 14px;
         border-radius: 20px;
         font-size: 0.9rem;
-        margin: 4px;
         font-weight: 500;
     }
     .tag-matched {
@@ -120,6 +127,39 @@ st.markdown("""
         background: rgba(239, 68, 68, 0.15);
         color: #f87171;
         border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .skill-progress {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .skill-progress-bar {
+        display: block;
+        width: 50px;
+        height: 6px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .skill-progress-fill {
+        display: block;
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
+    .tag-matched .skill-progress-fill {
+        background: linear-gradient(90deg, #22c55e, #4ade80);
+    }
+    .tag-partial .skill-progress-fill {
+        background: linear-gradient(90deg, #eab308, #facc15);
+    }
+    .tag-missing .skill-progress-fill {
+        background: linear-gradient(90deg, #ef4444, #f87171);
+    }
+    .skill-pct {
+        font-size: 0.75rem;
+        font-weight: 700;
+        opacity: 0.85;
     }
     .skill-section-title {
         color: #94a3b8;
@@ -349,33 +389,33 @@ if st.session_state.analyze_clicked and cleaned_resume and cleaned_jd:
         
         st.markdown('<h3 style="text-align: center; margin: 2rem 0 1rem 0;">Detailed Skill Breakdown</h3>', unsafe_allow_html=True)
         
-        matched_tags_tech = "".join([f'<span class="skill-tag tag-matched">{jd}</span>' for jd, res, score in tech['matched']]) if tech['matched'] else '<span style="color: #64748b;">None</span>'
-        partial_tags_tech = "".join([f'<span class="skill-tag tag-partial">{jd}</span>' for jd, res, score in tech['partial']]) if tech['partial'] else '<span style="color: #64748b;">None</span>'
-        missing_tags_tech = "".join([f'<span class="skill-tag tag-missing">{jd}</span>' for jd, score in tech['missing']]) if tech['missing'] else '<span style="color: #64748b;">None</span>'
+        matched_tags_tech = "".join([f'<span class="skill-tag tag-matched">{jd}<span class="skill-progress"><span class="skill-progress-bar"><span class="skill-progress-fill" style="width:{int(score*100)}%"></span></span><span class="skill-pct">{int(score*100)}%</span></span></span>' for jd, res, score in tech['matched']]) if tech['matched'] else '<span style="color: #64748b;">None</span>'
+        partial_tags_tech = "".join([f'<span class="skill-tag tag-partial">{jd}<span class="skill-progress"><span class="skill-progress-bar"><span class="skill-progress-fill" style="width:{int(score*100)}%"></span></span><span class="skill-pct">{int(score*100)}%</span></span></span>' for jd, res, score in tech['partial']]) if tech['partial'] else '<span style="color: #64748b;">None</span>'
+        missing_tags_tech = "".join([f'<span class="skill-tag tag-missing">{jd}<span class="skill-progress"><span class="skill-progress-bar"><span class="skill-progress-fill" style="width:{int(score*100)}%"></span></span><span class="skill-pct">{int(score*100)}%</span></span></span>' for jd, score in tech['missing']]) if tech['missing'] else '<span style="color: #64748b;">None</span>'
         
-        matched_tags_soft = "".join([f'<span class="skill-tag tag-matched">{jd}</span>' for jd, res, score in soft['matched']]) if soft['matched'] else '<span style="color: #64748b;">None</span>'
-        partial_tags_soft = "".join([f'<span class="skill-tag tag-partial">{jd}</span>' for jd, res, score in soft['partial']]) if soft['partial'] else '<span style="color: #64748b;">None</span>'
-        missing_tags_soft = "".join([f'<span class="skill-tag tag-missing">{jd}</span>' for jd, score in soft['missing']]) if soft['missing'] else '<span style="color: #64748b;">None</span>'
+        matched_tags_soft = "".join([f'<span class="skill-tag tag-matched">{jd}<span class="skill-progress"><span class="skill-progress-bar"><span class="skill-progress-fill" style="width:{int(score*100)}%"></span></span><span class="skill-pct">{int(score*100)}%</span></span></span>' for jd, res, score in soft['matched']]) if soft['matched'] else '<span style="color: #64748b;">None</span>'
+        partial_tags_soft = "".join([f'<span class="skill-tag tag-partial">{jd}<span class="skill-progress"><span class="skill-progress-bar"><span class="skill-progress-fill" style="width:{int(score*100)}%"></span></span><span class="skill-pct">{int(score*100)}%</span></span></span>' for jd, res, score in soft['partial']]) if soft['partial'] else '<span style="color: #64748b;">None</span>'
+        missing_tags_soft = "".join([f'<span class="skill-tag tag-missing">{jd}<span class="skill-progress"><span class="skill-progress-bar"><span class="skill-progress-fill" style="width:{int(score*100)}%"></span></span><span class="skill-pct">{int(score*100)}%</span></span></span>' for jd, score in soft['missing']]) if soft['missing'] else '<span style="color: #64748b;">None</span>'
         
         st.markdown(f"""
         <div class="skills-grid">
             <div class="analysis-card">
                 <div class="analysis-title">Technical Skills</div>
                 <div class="skill-section-title">Matched ({len(tech['matched'])})</div>
-                <div>{matched_tags_tech}</div>
+                <div class="skill-tags-grid">{matched_tags_tech}</div>
                 <div class="skill-section-title">Partial Match ({len(tech['partial'])})</div>
-                <div>{partial_tags_tech}</div>
+                <div class="skill-tags-grid">{partial_tags_tech}</div>
                 <div class="skill-section-title">Missing ({len(tech['missing'])})</div>
-                <div>{missing_tags_tech}</div>
+                <div class="skill-tags-grid">{missing_tags_tech}</div>
             </div>
             <div class="analysis-card">
                 <div class="analysis-title">Soft Skills</div>
                 <div class="skill-section-title">Matched ({len(soft['matched'])})</div>
-                <div>{matched_tags_soft}</div>
+                <div class="skill-tags-grid">{matched_tags_soft}</div>
                 <div class="skill-section-title">Partial Match ({len(soft['partial'])})</div>
-                <div>{partial_tags_soft}</div>
+                <div class="skill-tags-grid">{partial_tags_soft}</div>
                 <div class="skill-section-title">Missing ({len(soft['missing'])})</div>
-                <div>{missing_tags_soft}</div>
+                <div class="skill-tags-grid">{missing_tags_soft}</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
