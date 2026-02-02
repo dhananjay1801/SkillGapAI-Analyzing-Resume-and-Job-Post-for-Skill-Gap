@@ -1,0 +1,31 @@
+.cursor
+.git
+.gitignore
+
+# Python environments
+venv
+.venv
+env
+.env
+
+# Python cache / compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# IDE / editor settings
+.vscode
+.idea
+
+# OS / miscellaneous
+.DS_Store
+*.log
+
+# Binary / large artifacts
+*.pdf
+*.docx
+*.doc
+*.png
+*.jpg
+*.jpeg
+*.gif

@@ -6,7 +6,6 @@ import base64
 
 
 def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommendations, fig_tech=None, fig_soft=None, fig_radar=None):
-    """Generate PDF report matching dashboard layout exactly."""
     tech = gap_analysis['technical']
     soft = gap_analysis['soft']
     
@@ -72,13 +71,7 @@ def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommend
             'tag-missing': '#ef4444'
         }
         fill_color = colors.get(tag_class, '#999')
-        return f'''<div class="skill-tag {tag_class}">
-            <span class="skill-name">{skill_name}</span>
-            <span class="skill-progress">
-                <span class="progress-bar"><span class="progress-fill" style="width:{pct}%;background:{fill_color}"></span></span>
-                <span class="skill-pct">{pct}%</span>
-            </span>
-        </div>'''
+        return f'''<span class="skill-tag {tag_class}">{skill_name}<span class="skill-progress"><span class="skill-progress-bar"><span class="skill-progress-fill" style="width:{pct}%"></span></span><span class="skill-pct">{pct}%</span></span></span>'''
     
     def render_skills_grid(skills_list, tag_class, is_missing=False):
         if not skills_list:
@@ -103,7 +96,7 @@ def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommend
         <style>
             @page {{ size: A4; margin: 20px; }}
             body {{ 
-                font-family: "Segoe UI", Tahoma, sans-serif;
+                font-family: "Liberation Sans", "DejaVu Sans", "Noto Sans", "Segoe UI", Tahoma, sans-serif;
                 color: #1e293b;
                 line-height: 1.4;
                 font-size: 10px;
@@ -215,6 +208,8 @@ def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommend
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
                 margin: 8px 0 4px 0;
+                page-break-after: avoid;
+                break-after: avoid;
             }}
             .skills-grid-table {{
                 width: 100%;
@@ -227,53 +222,74 @@ def generate_pdf_report(gap_analysis, tech_pct, soft_pct, overall_pct, recommend
                 padding: 0;
             }}
             .skill-tag {{
-                display: block;
-                padding: 5px 8px;
-                border-radius: 12px;
-                font-size: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                padding: 8px 12px;
+                border-radius: 20px;
+                font-size: 9px;
                 font-weight: 500;
-                margin-bottom: 2px;
-            }}
-            .skill-name {{
-                display: inline-block;
+                box-sizing: border-box;
+                margin-bottom: 4px;
+                page-break-inside: avoid;
+                break-inside: avoid;
             }}
             .skill-progress {{
-                float: right;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                flex-shrink: 0;
             }}
-            .progress-bar {{
+            .skill-progress-bar {{
                 display: inline-block;
-                width: 35px;
+                width: 45px;
                 height: 5px;
-                background: rgba(0,0,0,0.1);
+                background: rgba(0,0,0,0.15);
                 border-radius: 3px;
                 overflow: hidden;
-                vertical-align: middle;
             }}
-            .progress-fill {{
+            .skill-progress-fill {{
                 display: block;
                 height: 100%;
                 border-radius: 3px;
             }}
             .skill-pct {{
-                font-size: 7px;
+                font-size: 8px;
                 font-weight: 700;
-                margin-left: 3px;
-                vertical-align: middle;
             }}
             .tag-matched {{
-                background: rgba(34, 197, 94, 0.15);
+                background: rgba(34, 197, 94, 0.2);
                 color: #16a34a;
-                border: 1px solid rgba(34, 197, 94, 0.3);
+                border: 1px solid rgba(34, 197, 94, 0.4);
+            }}
+            .tag-matched .skill-progress-bar {{
+                background: rgba(34, 197, 94, 0.25);
+            }}
+            .tag-matched .skill-progress-fill {{
+                background: #22c55e;
             }}
             .tag-partial {{
-                background: rgba(234, 179, 8, 0.15);
+                background: rgba(234, 179, 8, 0.2);
                 color: #a16207;
-                border: 1px solid rgba(234, 179, 8, 0.3);
+                border: 1px solid rgba(234, 179, 8, 0.4);
+            }}
+            .tag-partial .skill-progress-bar {{
+                background: rgba(234, 179, 8, 0.25);
+            }}
+            .tag-partial .skill-progress-fill {{
+                background: #eab308;
             }}
             .tag-missing {{
-                background: rgba(239, 68, 68, 0.15);
+                background: rgba(239, 68, 68, 0.2);
                 color: #dc2626;
-                border: 1px solid rgba(239, 68, 68, 0.3);
+                border: 1px solid rgba(239, 68, 68, 0.4);
+            }}
+            .tag-missing .skill-progress-bar {{
+                background: rgba(239, 68, 68, 0.25);
+            }}
+            .tag-missing .skill-progress-fill {{
+                background: #ef4444;
             }}
             .rec-table {{
                 width: 100%;
