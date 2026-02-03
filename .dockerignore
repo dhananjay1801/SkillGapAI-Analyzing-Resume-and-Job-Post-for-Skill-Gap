@@ -1,6 +1,7 @@
 .cursor
 .git
 .gitignore
+.devcontainer
 
 # Python environments
 venv

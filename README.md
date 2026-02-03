@@ -15,8 +15,8 @@ An intelligent AI-powered application that analyzes resumes against job descript
 ## Tech Stack
 
 - **Frontend**: Streamlit
-- **NLP**: spaCy, Transformers (BERT, JobBERT)
-- **ML Models**: BERT-based embeddings for semantic similarity
+- **NLP**: spaCy, Transformers (JobBERT), Sentence-Transformers
+- **ML Models**: Sentence-Transformer embeddings for semantic similarity
 - **Visualization**: Plotly
 - **PDF Generation**: WeasyPrint
 - **File Processing**: PyPDF2, python-docx, EasyOCR
@@ -123,10 +123,10 @@ The application uses several pre-trained models that are automatically downloade
 **Default Location:** `~/.cache/huggingface/hub/`
 
 **Models Used:**
-- **BERT Base Uncased** (`bert-base-uncased`)
-  - Used for: Skill embedding generation and semantic similarity matching
-  - Size: ~440 MB
-  - Path: `~/.cache/huggingface/hub/models--bert-base-uncased/`
+- **Sentence-Transformer** (`sentence-transformers/all-MiniLM-L6-v2`)
+  - Used for: Skill embeddings and semantic similarity (technical + soft skills, gap analysis, recommendations)
+  - Size: ~100 MB
+  - Path: `~/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2/`
 
 - **JobBERT Skill Extraction** (`jjzha/jobbert_skill_extraction`)
   - Used for: Named Entity Recognition (NER) to extract skills from text
