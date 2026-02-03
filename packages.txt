@@ -7,7 +7,6 @@ shared-mime-info
 libgl1
 libglib2.0-0
 
-# For Kaleido v1.2.0 (Plotly static image export)
 chromium
 chromium-driver
 libnss3
