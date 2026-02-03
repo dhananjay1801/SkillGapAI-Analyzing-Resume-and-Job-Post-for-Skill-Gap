@@ -101,6 +101,19 @@ streamlit run Home.py
 
 The application should open in your default web browser at `http://localhost:8501`
 
+### Run with Docker (prebuilt image)
+
+You can also run SkillGapAI using the prebuilt Docker image:
+
+```bash
+docker pull dhananjay1801/skillgap-ai
+docker run -p 8501:8501 dhananjay1801/skillgap-ai
+```
+
+Then open `http://localhost:8501`.
+
+Note: The first run may take a few minutes because the required ML/NLP models are downloaded on first use.
+
 ## Model Locations
 
 The application uses several pre-trained models that are automatically downloaded on first use. Here are their default storage locations:
@@ -163,15 +176,6 @@ python -m spacy download en_core_web_sm --force
 ```
 
 ## Usage
-
-### Running the Application
-
-1. Activate your virtual environment
-2. Navigate to the project directory
-3. Run:
-   ```bash
-   streamlit run Home.py
-   ```
 
 ### Using Skill Gap Analysis
 
