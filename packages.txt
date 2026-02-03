@@ -6,3 +6,12 @@ libffi-dev
 shared-mime-info
 libgl1
 libglib2.0-0
+
+# For Kaleido v1.2.0 (Plotly static image export)
+chromium
+chromium-driver
+libnss3
+libxss1
+libasound2
+libatk-bridge2.0-0
+libgtk-3-0
