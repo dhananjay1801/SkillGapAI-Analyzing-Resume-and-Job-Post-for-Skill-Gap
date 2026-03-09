@@ -7,8 +7,6 @@ shared-mime-info
 libgl1
 libglib2.0-0
 
-chromium
-chromium-driver
 libnss3
 libxss1
 libasound2
